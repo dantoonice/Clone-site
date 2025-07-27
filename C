@@ -1,0 +1,31 @@
+async function generateVoice() {
+  const text = document.getElementById("textInput").value;
+  const status = document.getElementById("status");
+  const audio = document.getElementById("audioPlayer");
+
+  if (!text.trim()) {
+    status.innerText = "Please enter text.";
+    return;
+  }
+
+  status.innerText = "Generating voice...";
+
+  try {
+    const res = await fetch("https://your-backend-url/api/clone", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+
+    audio.src = url;
+    audio.style.display = "block";
+    audio.play();
+    status.innerText = "Done!";
+  } catch (e) {
+    status.innerText = "Error generating voice.";
+    console.error(e);
+  }
+}
